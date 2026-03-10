@@ -1,41 +1,156 @@
 
-# Tim Hortons Recommendation System (FAANG-style)
+# Tim Hortons Recommendation System
 
-This project implements a production-style recommendation system inspired by architectures used at companies like Netflix, Amazon, and TikTok.
+Production-style recommendation system inspired by large-scale architectures used at Netflix, Amazon and TikTok.
 
-Architecture:
+This project implements a **two-stage recommendation pipeline**:
 
-User Logs
- → Feature Engineering
- → Two-Tower Retrieval Model
- → Vector Search
- → Ranking Model
- → Top-K Recommendations
- → REST API
+1. Candidate Retrieval (Two-Tower Model)
+2. Ranking Model for Top-K recommendations
 
-Key Features
+The system simulates how real-world recommendation systems operate in production ML environments.
 
-- Two-tower retrieval model
-- Ranking neural network
-- Vector similarity search
-- Feature engineering pipeline
-- Offline evaluation metrics (Recall@K)
-- REST API for real-time recommendation
+---
 
-Run pipeline
+# System Architecture
 
-1 Install dependencies
+User Behavior Logs  
+↓  
+Feature Engineering Pipeline  
+↓  
+Two-Tower Retrieval Model  
+↓  
+Vector Similarity Search  
+↓  
+Candidate Generation (Top 100)  
+↓  
+Ranking Model  
+↓  
+Top-K Recommendations  
+↓  
+REST API Serving  
 
-pip install -r requirements.txt
+---
 
-2 Train retrieval model
+# Tech Stack
 
-python train/train_retrieval.py
+Python  
+TensorFlow Recommenders  
+Scikit-learn  
+Flask  
+Pandas / NumPy  
 
-3 Start API
+---
+
+# Project Structure
+
+tim-hortons-recommendation-system
+│
+├── data
+├── feature_pipeline
+│   └── build_features.py
+├── models
+│   ├── two_tower.py
+│   └── ranking_model.py
+├── train
+│   └── train_retrieval.py
+├── evaluation
+│   └── metrics.py
+├── serving
+│   ├── vector_index.py
+│   └── recommend.py
+├── api
+│   └── app.py
+├── notebooks
+│   └── EDA.ipynb
+├── configs
+│   └── config.yaml
+└── README.md
+
+---
+
+# Model Design
+
+## Two-Tower Retrieval
+
+Two separate neural networks learn embeddings for:
+
+- Users
+- Products
+
+User Tower → User Embedding  
+Item Tower → Item Embedding  
+
+Similarity(User, Item)
+
+Top-K similar products are selected as candidate items.
+
+---
+
+# Ranking Model
+
+A neural ranking model re-scores the candidates.
+
+Input features:
+
+- user features
+- item features
+- interaction features
+
+Output:
+
+ranking score
+
+Top scoring items become final recommendations.
+
+---
+
+# Evaluation Metrics
+
+Offline evaluation includes:
+
+- Recall@K
+- Precision@K
+- NDCG@K
+
+Example:
+
+Recall@10 = 0.34
+
+---
+
+# API Example
+
+Start API:
 
 python api/app.py
 
-Example
+Request:
 
 http://localhost:5000/recommend?user_id=1
+
+Response:
+
+{
+"user_id":1,
+"recommendations":["Coffee","Ice Capp","Bagel"]
+}
+
+---
+
+# Future Improvements
+
+Possible production extensions:
+
+- Spark feature engineering
+- Databricks training pipeline
+- FAISS vector search
+- Real-time user events
+- A/B testing
+
+---
+
+# Author
+
+Weijia Qi  
+Machine Learning & Data Engineer
