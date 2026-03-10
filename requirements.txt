@@ -1,8 +1,7 @@
 
-tensorflow
-tensorflow-recommenders
+torch
 pandas
 numpy
 scikit-learn
 flask
-pyyaml
+jupyter

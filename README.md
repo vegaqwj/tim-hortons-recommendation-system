@@ -1,170 +1,188 @@
 
-# Tim Hortons Recommendation System
+# Realtime Recommendation System (PyTorch)
 
-Production-style recommendation system inspired by large-scale architectures used at Netflix, Amazon and TikTok.
+A production-style recommendation system demonstrating the architecture commonly used in large-scale systems such as Netflix, TikTok, and YouTube.
 
-This project implements a **two-stage recommendation pipeline**:
+The system uses a **two-stage recommendation pipeline**:
 
-1. Candidate Retrieval (Two-Tower Model)
-2. Ranking Model for Top-K recommendations
-
-The system simulates how real-world recommendation systems operate in production ML environments.
+1. Candidate Generation (Two-Tower Model)
+2. Ranking Model
+3. API Serving
 
 ---
 
 # System Architecture
 
-User Behavior Logs  
-↓  
-Feature Engineering Pipeline  
-↓  
-Two-Tower Retrieval Model  
-↓  
-Vector Similarity Search  
-↓  
-Candidate Generation (Top 100)  
-↓  
-Ranking Model  
-↓  
-Top-K Recommendations  
-↓  
-REST API Serving  
+```mermaid
+flowchart LR
+A[User Interaction Data] --> B[Feature Pipeline]
+B --> C[Two Tower Candidate Generation]
+C --> D[Candidate Items]
+D --> E[Ranking Model]
+E --> F[Top K Recommendations]
+F --> G[REST API]
+```
 
 ---
 
-# Tech Stack
+# Key Components
 
-Python  
-TensorFlow Recommenders  
-Scikit-learn  
-Flask  
-Pandas / NumPy  
+## Feature Pipeline
+
+Generates user and item features from interaction data.
+
+```
+feature_pipeline/build_features.py
+```
+
+Examples:
+
+- user interaction counts
+- item popularity
+
+---
+
+## Candidate Generation (Two-Tower)
+
+```
+candidate_generation/two_tower_model.py
+```
+
+Two neural networks learn embeddings for:
+
+- Users
+- Items
+
+Relevance is computed using **dot product similarity**.
+
+---
+
+## Negative Sampling
+
+```
+candidate_generation/negative_sampling.py
+```
+
+Implicit feedback datasets require negative samples.
+
+Training pairs:
+
+```
+(user, positive_item, 1)
+(user, negative_item, 0)
+```
+
+---
+
+## Ranking Model
+
+```
+ranking/ranking_model.py
+```
+
+Ranks candidate items using a neural network.
+
+Input:
+
+```
+[user_embedding, item_embedding]
+```
+
+Output:
+
+```
+relevance score
+```
+
+---
+
+## Evaluation Metrics
+
+```
+evaluation/metrics.py
+```
+
+Metrics implemented:
+
+- Recall@K
+- NDCG@K
+
+---
+
+# API Serving
+
+Run the API:
+
+```
+python api/app.py
+```
+
+Example request:
+
+```
+http://localhost:5000/recommend?user_id=1&top_k=5
+```
+
+Example response:
+
+```
+{
+  "user_id": 1,
+  "recommendations": [
+    {"item_id": 10, "title": "MovieA"},
+    {"item_id": 11, "title": "MovieB"}
+  ]
+}
+```
 
 ---
 
 # Project Structure
 
-tim-hortons-recommendation-system
+```
+realtime-recommendation-system
 │
 ├── data
 ├── feature_pipeline
-│   └── build_features.py
-├── models
-│   ├── two_tower.py
-│   └── ranking_model.py
-├── train
-│   └── train_retrieval.py
+├── candidate_generation
+├── ranking
 ├── evaluation
-│   └── metrics.py
+├── train
 ├── serving
-│   ├── vector_index.py
-│   └── recommend.py
 ├── api
-│   └── app.py
 ├── notebooks
-│   └── EDA.ipynb
-├── configs
-│   └── config.yaml
+├── requirements.txt
 └── README.md
+```
 
 ---
 
-# Model Design
+# Tech Stack
 
-## Two-Tower Retrieval
-
-Two separate neural networks learn embeddings for:
-
-- Users
-- Products
-
-User Tower → User Embedding  
-Item Tower → Item Embedding  
-
-Similarity(User, Item)
-
-Top-K similar products are selected as candidate items.
+- PyTorch
+- Python
+- Flask
+- Pandas
+- NumPy
 
 ---
 
-# Ranking Model
+# Recommendation Pipeline
 
-A neural ranking model re-scores the candidates.
-
-Input features:
-
-- user features
-- item features
-- interaction features
-
-Output:
-
-ranking score
-
-Top scoring items become final recommendations.
-
----
-
-# Evaluation Metrics
-
-Offline evaluation includes:
-
-- Recall@K
-- Precision@K
-- NDCG@K
-
-Example:
-
-Recall@10 = 0.34
-
----
-
-# API Example
-
-Start API:
-
-python api/app.py
-
-Request:
-
-http://localhost:5000/recommend?user_id=1
-
-Response:
-
-{
-"user_id":1,
-"recommendations":["Coffee","Ice Capp","Bagel"]
-}
-
----
-
-# Future Improvements
-
-Possible production extensions:
-
-- Spark feature engineering
-- Databricks training pipeline
-- FAISS vector search
-- Real-time user events
-- A/B testing
-
-## Distributed Data Pipeline
-
-The project includes a Spark-based feature engineering pipeline to simulate
-large-scale recommendation data processing used in modern ML platforms
-such as Databricks.
-
-Pipeline:
-
-User Events
-→ Spark Feature Engineering
-→ Two-Tower Retrieval
-→ Ranking Model
-→ API Serving
+User Interactions  
+↓  
+Feature Engineering  
+↓  
+Two-Tower Retrieval  
+↓  
+Ranking Model  
+↓  
+Top-K Recommendation  
+↓  
+REST API Serving  
 
 ---
 
 # Author
 
-Weijia Qi  
-Machine Learning & Data Engineer
+Machine Learning Engineer Portfolio Project

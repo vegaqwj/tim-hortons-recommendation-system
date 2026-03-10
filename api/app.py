@@ -1,16 +1,18 @@
 
 from flask import Flask, request, jsonify
-from serving.recommend import recommend
+from serving.recommendation_service import recommend
 
 app = Flask(__name__)
 
 @app.route("/recommend")
-def recommend_api():
-    user_id = request.args.get("user_id")
-    recs = recommend(user_id)
+def rec():
+
+    user_id = int(request.args.get("user_id",1))
+    k = int(request.args.get("top_k",5))
+
     return jsonify({
         "user_id":user_id,
-        "recommendations":[str(r) for r in recs.numpy()]
+        "recommendations":recommend(user_id,k)
     })
 
 if __name__ == "__main__":
