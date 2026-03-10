@@ -1,0 +1,10 @@
+
+training:
+  epochs: 5
+  batch_size: 32
+
+retrieval:
+  embedding_dim: 32
+
+ranking:
+  hidden_layers: [64,32]

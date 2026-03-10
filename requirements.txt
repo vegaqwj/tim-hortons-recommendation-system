@@ -1,0 +1,8 @@
+
+tensorflow
+tensorflow-recommenders
+pandas
+numpy
+scikit-learn
+flask
+pyyaml
