@@ -148,6 +148,20 @@ Possible production extensions:
 - Real-time user events
 - A/B testing
 
+## Distributed Data Pipeline
+
+The project includes a Spark-based feature engineering pipeline to simulate
+large-scale recommendation data processing used in modern ML platforms
+such as Databricks.
+
+Pipeline:
+
+User Events
+→ Spark Feature Engineering
+→ Two-Tower Retrieval
+→ Ranking Model
+→ API Serving
+
 ---
 
 # Author
